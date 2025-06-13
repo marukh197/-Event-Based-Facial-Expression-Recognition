@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>DVS Expression Detector</title>
+</head>
+<body>
+  <h1>DVS Expression Detector</h1>
+  <form id="uploadForm">
+    <label>
+      DVS Video:
+      <input type="file" name="video" accept="video/*,.avi" required>
+    </label>
+    <br><br>
+    <label>
+      Timestamp (s):
+      <input type="number" step="0.1" name="time">
+    </label>
+    <br><br>
+    <button type="submit">Upload & Predict</button>
+  </form>
+
+  <h2>Predicted Emotion:</h2>
+  <pre id="out">—</pre>
+
+  <script>
+    document.getElementById("uploadForm").onsubmit = async e => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      document.getElementById("out").innerText = "Predicting…";
+      const resp = await fetch("/predict_video", {
+        method: "POST",
+        body: form
+      });
+      const j = await resp.json();
+      // **just** display the emotion label
+      document.getElementById("out").innerText = j.emotion;
+    };
+  </script>
+</body>
+</html>
